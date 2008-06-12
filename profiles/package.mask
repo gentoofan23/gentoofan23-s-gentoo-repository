@@ -1,0 +1,5 @@
+# Thomas Anderson <gentoofan23@gmail.com> (11 Sep 2007)
+# Live Subversion version for Supercat.
+# Please note that you need >=sys-apps/portage-2.1.2-r3 to be able to actually
+# use these versions by adding "**" for them in package.keywords.
+~media-sound/amarok-9999

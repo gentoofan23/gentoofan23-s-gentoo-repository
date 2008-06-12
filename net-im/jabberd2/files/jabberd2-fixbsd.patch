@@ -1,0 +1,50 @@
+diff -u -B -r1.1 jabberd-2.2.0.init
+--- jabberd-2.2.0.init	7 Jun 2007 09:17:37 -0000	1.1
++++ jabberd-2.2.0.init	13 Jun 2007 17:31:29 -0000
+@@ -9,12 +9,12 @@
+ 	provide jabber-server
+ }
+ 
+-function stopJabberServices() {
++stopJabberServices() {
+ 
+ 	eindent
+ 	for pidfile in /var/run/jabber/*.pid; do
+-		if [[ -f "${pidfile}" ]]; then
+-			service=$(basename ${pidfile/.pid/})
++		if [ -f "${pidfile}" ]; then
++			service=$(basename ${pidfile} .pid)
+ 			ebegin "Stopping ${service}"
+ 			start-stop-daemon \
+ 				--stop \
+@@ -29,14 +29,15 @@
+ start() {
+ 
+ 	einfo "Starting Jabber Server ..."
+-	local services=$(grep -v ^# /etc/jabber/jabberd.cfg | grep '..*' | awk '{print $1 ":" $2}')
++	local services
++	services=$(grep -v ^# /etc/jabber/jabberd.cfg | grep '..*' | awk '{print $1 ":" $2}')
+ 	eindent
+ 	for service in ${services}; do
+ 
+-		cfgfile=${service/*:/}
+-		service=${service/:*/}
+-		if [[ ! -f "${cfgfile}" ]]; then
+-			if [[ -f "/etc/jabber/${service}.xml" ]]; then
++		cfgfile=$(echo ${service} | cut -d ':' -f 2)
++		service=$(echo ${service} | cut -d ':' -f 1)
++		if [ ! -f "${cfgfile}" ]; then
++			if [ -f "/etc/jabber/${service}.xml" ]; then
+ 				cfgfile="/etc/jabber/${service}.xml"
+ 			else
+ 				eerror "Can't find: ${cfgfile} or default /etc/jabber/${service}.xml"
+@@ -47,7 +48,7 @@
+ 
+ 		executable=/usr/bin/${service}
+ 
+-		if [[ ! -f "${executable}" ]]; then
++		if [ ! -f "${executable}" ]; then
+ 			eerror "Can't find executable: ${executable}"
+ 			stopJabberServices
+ 			return 1
+
