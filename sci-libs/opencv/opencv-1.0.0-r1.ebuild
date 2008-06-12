@@ -41,11 +41,11 @@ src_unpack() {
 	# remove the install-hook that runs ldconfig.
 	sed -i '/install-hook:/,/^$/d' Makefile.am
 
-	epatch "${FILESDIR}"/${P}-cvcapffmpeg.patch
 	epatch "${FILESDIR}"/${P}-fixpythonmultilib.patch
 	epatch "${FILESDIR}"/${P}-automagicdependencies.patch
 	epatch "${FILESDIR}"/${P}-havepngexrdefs.patch
 	epatch "${FILESDIR}"/${P}-addoptionalsamples.patch
+	epatch "${FILESDIR}"/${P}-cvcapffmpegundefinedsymbols.patch
 
 	eautoreconf || die "eautoreconf failed"
 }
