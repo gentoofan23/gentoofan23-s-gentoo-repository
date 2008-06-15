@@ -11,18 +11,22 @@ SRC_URI="http://ftp.xiaoka.com/${PN}/releases/jabberd-${PV}.tar.bz2"
 SLOT="0"
 LICENSE="GPL-2"
 KEYWORDS="~amd64 ~ppc ~sparc ~x86"
-IUSE="debug memdebug ipv6 ldap mysql pam pipe sasl postgres sqlite"
+IUSE="cyrus debug memdebug ipv6 ldap mysql pam pipe gsasl postgres sqlite"
 
 DEPEND="dev-libs/expat
 	dev-libs/openssl
-	>=virtual/gsasl-0.2.26
+	net-libs/udns
 	>=net-dns/libidn-0.6
 	ldap? ( net-nds/openldap )
 	>=sys-libs/db-4.1.24
 	pam? ( virtual/pam )
 	mysql? ( virtual/mysql )
 	postgres? ( virtual/postgresql-server )
-	sqlite? ( >=dev-db/sqlite-3 )"
+	sqlite? ( >=dev-db/sqlite-3 )
+	!cyrus? ( gsasl? ( >=virtual/gsasl-0.2.26 ) )
+	gsasl? ( cyrus? ( dev-libs/cyrus-sasl ) )
+	cyrus? ( dev-libs/cyrus-sasl )
+	!gsasl? ( !cyrus? ( dev-libs/cyrus-sasl ) )"
 RDEPEND="${DEPEND}
 	>=net-im/jabber-base-0.01
 	!net-im/jabberd"
@@ -34,10 +38,12 @@ src_compile() {
 	# https://bugs.gentoo.org/show_bug.cgi?id=207655#c3
 	replace-flags -O[3s] -O2
 
+	local myconf
+
 	if use debug; then
-		localconf="${localconf} --enable-debug"
+		myconf="${myconf} --enable-debug"
 		# --enable-pool-debug is currently broken
-		use memdebug && localconf="${localconf} --enable-nad-debug"
+		use memdebug && myconf="${myconf} --enable-nad-debug"
 	else
 		if use memdebug; then
 			ewarn
@@ -46,11 +52,19 @@ src_compile() {
 		fi
 	fi
 
+	if use gsasl && use cyrus; then
+		myconf="${myconf} --with-sasl=cyrus"
+	elif use gsasl && ! use cyrus ; then
+		myconf="${myconf} --with-sasl=gsasl"
+	else
+		myconf="${myconf} --with-sasl=cyrus"
+	fi
+
 	econf \
 		--sysconfdir=/etc/jabber \
 		--enable-db \
 		--with-extra-include-path=$(db_includedir) \
-		${localconf} \
+		${myconf} \
 		$(use_enable ipv6) \
 		$(use_enable ldap) \
 		$(use_enable mysql) \
@@ -58,8 +72,6 @@ src_compile() {
 		$(use_enable pipe) \
 		$(use_enable postgres pgsql) \
 		$(use_enable sqlite) \
-		$(use_with sasl gsasl) \
-		|| die "econf failed"
 	emake || die "make failed"
 
 }
