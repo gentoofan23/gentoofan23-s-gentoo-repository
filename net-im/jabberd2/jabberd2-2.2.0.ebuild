@@ -14,9 +14,9 @@ KEYWORDS="~amd64 ~ppc ~sparc ~x86"
 IUSE="debug memdebug ipv6 ldap mysql pam pipe postgres sqlite"
 
 DEPEND="dev-libs/expat
-	dev-libs/openssl
+	>=dev-libs/openssl-0.9.6b
 	net-libs/udns
-	>=net-dns/libidn-0.6
+	>=net-dns/libidn-0.3
 	ldap? ( net-nds/openldap )
 	>=sys-libs/db-4.1.24
 	pam? ( virtual/pam )
