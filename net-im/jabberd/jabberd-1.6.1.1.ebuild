@@ -2,7 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/net-im/jabberd/jabberd-1.4.4-r3.ebuild,v 1.17 2008/05/21 18:55:06 dev-zero Exp $
 
-inherit eutils
+WANT_AUTOMAKE="1.9"
+inherit autotools eutils
 
 DESCRIPTION="Open-source Jabber server"
 HOMEPAGE="http://www.jabber.org"
@@ -45,6 +46,7 @@ src_unpack() {
 	epatch "${FILESDIR}/${P}-sandbox.patch"
 	epatch "${FILESDIR}/${P}-parallel-make.patch"
 
+	eautoreconf || die "Reconfiguring autotools failed!"
 }
 
 src_compile() {
