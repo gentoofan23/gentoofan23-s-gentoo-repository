@@ -45,6 +45,7 @@ src_unpack() {
 	## Gentoo bug #200616
 	epatch "${FILESDIR}/${P}-sandbox.patch"
 	epatch "${FILESDIR}/${P}-parallel-make.patch"
+	epatch "${FILESDIR}/${P}-undefineddebug.patch"
 
 	eautoreconf || die "Reconfiguring autotools failed!"
 }
