@@ -42,7 +42,6 @@ src_unpack() {
 
 	#Shamelessly stolen from Freebsd
 	epatch "${FILESDIR}/${P}-gnutls2.2.patch"
-	## Gentoo bug #200616
 	epatch "${FILESDIR}/${P}-sandbox.patch"
 	epatch "${FILESDIR}/${P}-parallel-make.patch"
 	epatch "${FILESDIR}/${P}-undefineddebug.patch"
