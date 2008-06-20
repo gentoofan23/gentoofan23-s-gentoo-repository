@@ -37,7 +37,7 @@ pkg_setup() {
 }
 
 src_unpack() {
-	unpack "${A}"
+	unpack ${A}
 	cd "${S}"
 
 	#Shamelessly stolen from Freebsd
