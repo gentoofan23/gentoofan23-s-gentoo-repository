@@ -1,6 +1,6 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/net-im/jabberd/jabberd-1.4.4-r3.ebuild,v 1.17 2008/05/21 18:55:06 dev-zero Exp $
+# $Header: /var/cvsroot/gentoo-x86/net-im/jabberd/jabberd-1.6.1.1-r1.ebuild,v 1.3 2008/06/20 19:32:42 gentoofan23 Exp $
 
 WANT_AUTOMAKE="1.9"
 inherit autotools eutils
@@ -12,7 +12,7 @@ SRC_URI="http://download.jabberd.org/jabberd14/jabberd14-${PV}.tar.gz"
 SLOT="0"
 LICENSE="GPL-2"
 KEYWORDS="~alpha ~amd64 ~hppa ~ppc ~sparc ~x86"
-IUSE="debug ipv6 mysql postgres ssl"
+IUSE="ipv6 mysql postgres"
 
 RDEPEND=">=net-im/jabber-base-0.01
 	>=dev-libs/pth-1.4.0
@@ -20,7 +20,7 @@ RDEPEND=">=net-im/jabber-base-0.01
 	net-dns/libidn
 	mysql? ( virtual/mysql )
 	postgres? ( virtual/postgresql-server )
-	ssl? ( net-libs/gnutls )
+	net-libs/gnutls
 	dev-libs/popt"
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig
@@ -42,6 +42,7 @@ src_unpack() {
 
 	#Shamelessly stolen from Freebsd
 	epatch "${FILESDIR}/${P}-gnutls2.2.patch"
+	## Gentoo bug #200616
 	epatch "${FILESDIR}/${P}-sandbox.patch"
 	epatch "${FILESDIR}/${P}-parallel-make.patch"
 	epatch "${FILESDIR}/${P}-undefineddebug.patch"
@@ -52,15 +53,10 @@ src_unpack() {
 src_compile() {
 	unset LC_ALL LC_CTYPE
 
-	# Broken configure script - can't use "use_enable"
-	local myconf=
-	use debug && myconf="${myconf} --enable-debug --enable-pool-debug"
-	use ipv6  && myconf="${myconf} --enable-ipv6"
-	use ssl   && myconf="${myconf} --enable-ssl"
-
 	econf \
 		--sysconfdir=/etc/jabber \
-		${myconf} \
+		--enable-ssl \
+		$(use_enable ipv6) \
 		$(use_with mysql) \
 		$(use_with postgres postgresql) \
 		|| die "econf failed"
