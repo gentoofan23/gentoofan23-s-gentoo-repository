@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI="1"
-inherit eutils flag-o-matic autotools multilib
+inherit eutils flag-o-matic autotools
 
 DESCRIPTION="A collection of algorithms and sample code for various computer vision problems."
 HOMEPAGE="http://www.intel.com/technology/computing/opencv/index.htm"
