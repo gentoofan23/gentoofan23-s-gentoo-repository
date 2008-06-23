@@ -71,8 +71,8 @@ src_install() {
 	fowners jabber:jabber /usr/bin/{jabberd,router,resolver,sm,c2s,s2s}
 	fperms 750 /usr/bin/{jabberd,router,resolver,sm,c2s,s2s}
 
-	newinitd "${FILESDIR}/jabberd2-${PV}.init" jabberd || die "newinitd failed"
-	newpamd "${FILESDIR}/jabberd2-${PV}.pamd" jabberd || die "newpamd failed"
+	newinitd "${FILESDIR}/${P}.init" jabberd || die "newinitd failed"
+	newpamd "${FILESDIR}/${P}.pamd" jabberd || die "newpamd failed"
 
 	dodoc AUTHORS README UPGRADE
 	docinto tools
