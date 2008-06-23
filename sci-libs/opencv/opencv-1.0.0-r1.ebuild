@@ -79,5 +79,7 @@ src_test() {
 
 src_install() {
 	emake DESTDIR="${D}" install || die "Install failed"
-	dodoc AUTHORS NEWS TODO
+	dodoc AUTHORS ChangeLog README NEWS TODO
+	insinto /usr/share/doc/${P}
+	doins -r docs/
 }
