@@ -31,6 +31,30 @@ RDEPEND="${DEPEND}
 
 S="${WORKDIR}/jabberd-${PV}"
 
+pkg_setup() {
+	if ! use berkdb && ! use postgres && ! use mysql && ! use sqlite; then
+		eerror 'You have no storage backend selected.'
+		eerror 'Please set one of the following USE flags:'
+		eerror '    berkdb'
+		eerror '    postgres'
+		eerror '    mysql'
+		eerror '    sqlite'
+		die 'Please enable one of the storage backends mentioned.'
+	fi
+
+	if ! use berkdb && ! use mysql && ! use postgres \
+	&& ! use pam && ! use ldap; then
+		eerror 'You have no Authentication mechanism selected.'
+		eerror 'Please set one of the following USE flags for authentication:'
+		eerror '    berkdb'
+		eerror '    mysql'
+		eerror '    postgres'
+		eerror '    pam'
+		eerror '    ldap'
+		die 'Please enable one of the authentication mechanisms mentioned.'
+	fi
+}
+
 src_unpack() {
 	unpack ${A}
 	cd "${S}"
@@ -59,7 +83,7 @@ src_compile() {
 	econf \
 		--sysconfdir=/etc/jabber \
 		${myconf} \
-		$(use_enable db)
+		$(use_enable berkdb db)
 		$(use_enable ldap) \
 		$(use_enable mysql) \
 		$(use_enable pam) \
