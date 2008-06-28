@@ -60,7 +60,7 @@ src_compile() {
 		--sysconfdir=/etc/jabber \
 		--enable-fs --enable-pipe --enable-anon \
 		${myconf} \
-		$(use_enable berkdb db)
+		$(use_enable berkdb db) \
 		$(use_enable ldap) \
 		$(use_enable mysql) \
 		$(use_enable pam) \
