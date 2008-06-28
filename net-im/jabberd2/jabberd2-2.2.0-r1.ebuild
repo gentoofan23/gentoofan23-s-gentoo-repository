@@ -11,7 +11,7 @@ SRC_URI="http://ftp.xiaoka.com/${PN}/releases/jabberd-${PV}.tar.bz2"
 SLOT="0"
 LICENSE="GPL-2"
 KEYWORDS="~amd64 ~ppc ~sparc ~x86"
-IUSE="berkdb debug memdebug ldap mysql pam pipe postgres sqlite ssl zlib"
+IUSE="berkdb debug memdebug mysql ldap pam pipe postgres sqlite ssl zlib"
 
 DEPEND="dev-libs/expat
 	zlib? ( sys-libs/zlib )
