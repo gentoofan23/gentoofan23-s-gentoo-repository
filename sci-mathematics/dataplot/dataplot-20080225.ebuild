@@ -1,6 +1,6 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/sci-mathematics/dataplot/dataplot-20080225.ebuild,v 1.3 2008/06/04 17:07:06 mr_bones_ Exp $
 
 inherit eutils toolchain-funcs flag-o-matic autotools fortran
 
@@ -40,30 +40,38 @@ pkg_setup() {
 		fi
 	fi
 	##FIXME: Just gfortran for now, I'll get to testing g77 later
-	NEED_FORTRAN="gfortran"
+	FORTRAN="gfortran"
 	fortran_pkg_setup
 }
 
 src_unpack() {
-	mkdir ${MY_P} && cd "${S}"
+	# unpacking and renaming because
+	# upstream does not use directories
+	mkdir "${S_AUX}"
+	pushd "${S_AUX}"
+	unpack ${MY_P_AUX}.tar.gz
+	popd
+	mkdir ${MY_P}
+	cd "${S}"
 	unpack ${MY_P}.tar.gz
+
+	# autotoolization: need to fix a few files with
+	# hardcoded directories (will be fixed with autoconf)
 	mv DPCOPA.INC DPCOPA.INC.in
 	mv dp1_linux.f dp1_linux.f.in
 	mv dp1_linux_64.f dp1_linux_64.f.in
+	# various fixes (mainly syntax)
 	epatch "${FILESDIR}"/dpsrc-patchset-${PV}.patch
+	# some fortran patches
 	epatch "${FILESDIR}"/dpsrc-dp1patches-${PV}.patch
-
-	cp "${FILESDIR}"/Makefile.am.${PV} "${S}"/Makefile.am
-	cp "${FILESDIR}"/configure.ac.${PV} "${S}"/configure.ac
-
-	mkdir "${S_AUX}" && cd "${S_AUX}"
-	unpack ${MY_P_AUX}.tar.gz
-	cd "${S}"
+	cp "${FILESDIR}"/Makefile.am.${PV} Makefile.am
+	cp "${FILESDIR}"/configure.ac.${PV} configure.ac
 	eautoreconf
 }
 
 src_compile() {
-	econf $(use_enable gd) \
+	econf \
+		$(use_enable gd) \
 		$(use_enable gs) \
 		$(use_enable opengl) \
 		$(use_enable X) || die "Econf failed"
@@ -79,13 +87,11 @@ src_install() {
 		doins -r "${S_AUX}"/data/* || die "Installing examples failed"
 	fi
 	insinto /usr/share/dataplot
-	doins "${S_AUX}"/dpmesf.tex "${S_AUX}"/dpsysf.tex "${S_AUX}"/dplogf.tex || \
-	die "Doins failed."
-	doenvd "${FILESDIR}"/90${PN}
+	doins "${S_AUX}"/dp{mes,sys,log}f.tex || die "Doins failed."
+	doenvd "${FILESDIR}"/90${PN} || die "doenvd failed"
 }
 
 pkg_postinst() {
-	einfo "To avoid error messages on dataplot startup please run(as root): "
-	einfo "env-update && source /etc/profile"
-	einfo "This is because dataplot installs env.d files for dataplot variables."
+	elog "Before using dataplot, please run (as root):"
+	elog "env-update && source /etc/profile"
 }
