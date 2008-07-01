@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/sci-mathematics/dataplot/dataplot-20080225.ebuild,v 1.3 2008/06/04 17:07:06 mr_bones_ Exp $
 
-inherit eutils toolchain-funcs flag-o-matic autotools fortran
+inherit eutils toolchain-funcs autotools fortran
 
 #     DAY         MONTH    YEAR
 MY_PV=${PV:4:2}_${PV:6:2}_${PV:0:4}
