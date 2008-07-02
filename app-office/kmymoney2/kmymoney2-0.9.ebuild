@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-office/kmymoney2/kmymoney2-0.8.8.ebuild,v 1.5 2008/01/24 22:38:09 philantrop Exp $
 
+EAPI="1"
 inherit kde
 
 DESCRIPTION="Personal Finances Manager for KDE."
@@ -15,9 +16,13 @@ IUSE="crypt hbci ofx test"
 
 COMMON_DEPEND="dev-libs/libxml2
 	hbci? ( >=net-libs/aqbanking-1.8.0_beta )
-	ofx? ( >=dev-libs/libofx-0.7 )"
+	ofx? ( >=dev-libs/libofx-0.8.2
+	|| ( dev-cpp/libxmlpp:2.6 >=dev-cpp/libxmlpp-1.0.1:0 )
+	>=net-misc/curl-7.9.7
+	app-text/opensp )"
 
 DEPEND="${COMMON_DEPEND}
+	>=dev-util/pkgconfig-0.9.0
 	test? ( >=dev-util/cppunit-1.8.0 )"
 
 RDEPEND="${COMMON_DEPEND}
@@ -35,6 +40,7 @@ pkg_setup() {
 
 src_compile() {
 	local myconf="$(use_enable ofx ofxplugin)
+			$(use_enable ofx ofxbanking)
 			$(use_enable hbci kbanking)
 			$(use_enable test cppunit)"
 
