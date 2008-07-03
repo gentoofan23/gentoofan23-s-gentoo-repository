@@ -1,6 +1,6 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-office/kmymoney2/kmymoney2-0.8.8.ebuild,v 1.6 2008/07/03 01:10:40 gentoofan23 Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-office/kmymoney2/kmymoney2-0.9.ebuild,v 1.1 2008/07/03 00:40:09 keytoaster Exp $
 
 inherit kde
 
@@ -10,43 +10,36 @@ SRC_URI="mirror://sourceforge/kmymoney2/${P}.tar.bz2"
 LICENSE="GPL-2"
 
 SLOT="0"
-KEYWORDS="amd64 ppc ~ppc64 sparc x86"
-IUSE="crypt ofx hbci"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
+IUSE="crypt ofx test"
 
-DEPEND="dev-libs/libxml2
-	hbci? ( >=net-libs/aqbanking-1.8.0_beta )
-	ofx? ( >=dev-libs/libofx-0.7 )"
+COMMON_DEPEND="dev-libs/libxml2
+	ofx? ( >=dev-libs/libofx-0.8.2 app-text/opensp )"
 
-RDEPEND="${DEPEND}
+DEPEND="${COMMON_DEPEND}
+	>=dev-util/pkgconfig-0.9.0
+	test? ( >=dev-util/cppunit-1.12.1 )"
+
+RDEPEND="${COMMON_DEPEND}
 	crypt? ( app-crypt/gnupg )"
-
-#DEPEND="${DEPEND}
-#	dev-util/cppunit"
 
 need-kde 3.5
 
-# TODO: support maketest
-# (needs cppunit in DEPEND)
-
-PATCHES="${FILESDIR}/kmymoney2.desktop.diff"
-
-pkg_setup() {
-	if use hbci && ! built_with_use net-libs/aqbanking kde; then
-		eerror "The HBCI plugin is shipped by net-libs/aqbanking,"
-		eerror "which has to be built with KDE support."
-		die "rebuild net-libs/aqbanking with USE=kde"
-	fi
-}
-
 src_compile() {
 	local myconf="$(use_enable ofx ofxplugin)
-			$(use_enable hbci kbanking)
-			--disable-cppunit"
+		$(use_enable ofx ofxbanking)
+		$(use_enable test cppunit)
+		--disable-kbanking"
 
 	# bug 132665
 	replace-flags "-Os" "-O2"
 
 	kde_src_compile
+}
+
+src_test() {
+	# Parallel make check is broken
+	make -j1 check || die "Make check failed!"
 }
 
 src_install() {
