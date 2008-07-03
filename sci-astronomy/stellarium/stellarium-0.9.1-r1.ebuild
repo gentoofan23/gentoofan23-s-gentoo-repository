@@ -21,7 +21,7 @@ RDEPEND="virtual/opengl
 	dev-libs/boost
 	media-libs/jpeg
 	net-misc/curl
-	>=x11-libs/qt-4.2:4
+	|| ( x11-libs/qt-core:4  >=x11-libs/qt-4.2:4 )
 	nls? ( virtual/libintl )"
 DEPEND="${RDEPEND}
 	>=dev-util/cmake-2.4.6
