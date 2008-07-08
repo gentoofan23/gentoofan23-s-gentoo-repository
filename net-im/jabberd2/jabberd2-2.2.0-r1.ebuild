@@ -64,7 +64,6 @@ src_compile() {
 		$(use_enable ldap) \
 		$(use_enable mysql) \
 		$(use_enable pam) \
-		$(use_enable pipe) \
 		$(use_enable postgres pgsql) \
 		$(use_enable sqlite) \
 		$(use_enable ssl) \
